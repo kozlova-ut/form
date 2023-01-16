@@ -17,28 +17,54 @@
         #success {
             display: none;
         }
-        
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Напиши мне</h1>
         <form id="tg">
-            <input class="form-control mb-2" name="name" type="text" placeholder="Имя" required>
-            <input class="form-control mb-2" name="phone" type="tel" placeholder="Телефон" required>
-            <textarea class="form-control mb-4" name="message" rows="15" placeholder="Сообщение" required></textarea>
+            <input class="form-control mb-2" id="name" name="name" type="text" placeholder="Имя">
+            <input class="form-control mb-2" id="phone" name="phone" type="tel" placeholder="Телефон">
+            <textarea class="form-control mb-4" id="message" name="message" rows="15" placeholder="Сообщение"></textarea>
             <div id="success" class="alert alert-success mb-4">Сообщение отправлено</div>
             <button class="btn btn-primary" type="submit">Отправить</button>
         </form>
     </div>
 
+    <!-- маска номера телефона -->
     <script src="inputmask.min.js"></script>
     <script>
-        const phone = document.querySelector("input[type='tel']");
+        const phone = document.getElementById('phone');
         const im = new Inputmask('8 (999) 999-99-99');
         im.mask(phone);
     </script>
 
+    <!-- валидация формы -->
+    <script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js"></script>
+    <script>
+        const validation = new JustValidate('#tg', { errorFieldCssClass: 'is-invalid'});
+        validation
+            .addField('#name', [
+                {
+                    rule: 'required',
+                    errorMessage: " "
+                }
+            ])
+            .addField('#phone', [
+                {
+                    rule: 'required',
+                    errorMessage: " "
+                }
+            ])
+            .addField('#message', [
+                {
+                    rule: 'required',
+                    errorMessage: " "
+                }
+            ])
+    </script>
+
+    <!-- отправка формы -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         const TOKEN = "5443287425:AAEj0MA2OYh2GShTdzuKSrttCK2QBuDHUvQ";
@@ -50,29 +76,33 @@
         document.getElementById('tg').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            let message = `<b>Сообщение с сайта</b>\n`;
+            let invalidInputs = document.querySelectorAll('.is-invalid');
 
-            message += `<b>Имя:</b> ${this.name.value}\n`;
-            message += `<b>Телефон:</b> ${this.phone.value}\n`;
-            message += `<b>Сообщение:</b> ${this.message.value}`;
+            if (invalidInputs.length === 0) {
 
-            axios.post(URI_API, {
-                chat_id: CHAT_ID,
-                parse_mode: 'html',
-                text: message
-            })
-            .then((res) => {
-                this.name.value = "";
-                this.phone.value = "";
-                this.message.value = "";
-                success.style.display = "block"
-            })
-            .catch((err) => {
-                console.warn(err);
-            })
-            .finally(() => {
-                console.log('Сообщение отправлено');
-            })
+                let message = `<b>Сообщение с сайта</b>\n`;
+                message += `<b>Имя:</b> ${this.name.value}\n`;
+                message += `<b>Телефон:</b> ${this.phone.value}\n`;
+                message += `<b>Сообщение:</b> ${this.message.value}`;
+
+                axios.post(URI_API, {
+                    chat_id: CHAT_ID,
+                    parse_mode: 'html',
+                    text: message
+                })
+                .then((res) => {
+                    this.name.value = "";
+                    this.phone.value = "";
+                    this.message.value = "";
+                    success.style.display = "block"
+                })
+                .catch((err) => {
+                    console.warn(err);
+                })
+                .finally(() => {
+                    console.log('Сообщение отправлено');
+                })
+            }
         })
     </script>
 
