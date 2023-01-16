@@ -7,10 +7,11 @@
     <title>TG Message</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+
     <style>
         .container {
             max-width: 1200px;
-            margin: 0px auto;
+            margin: 20px auto 0px;
         }
 
         #success {
@@ -24,12 +25,19 @@
         <h1>Напиши мне</h1>
         <form id="tg">
             <input class="form-control mb-2" name="name" type="text" placeholder="Имя" required>
-            <input class="form-control mb-2" name="phone" type="text" placeholder="Телефон" required>
+            <input class="form-control mb-2" name="phone" type="tel" placeholder="Телефон" required>
             <textarea class="form-control mb-4" name="message" rows="15" placeholder="Сообщение" required></textarea>
             <div id="success" class="alert alert-success mb-4">Сообщение отправлено</div>
             <button class="btn btn-primary" type="submit">Отправить</button>
         </form>
     </div>
+
+    <script src="inputmask.min.js"></script>
+    <script>
+        const phone = document.querySelector("input[type='tel']");
+        const im = new Inputmask('8 (999) 999-99-99');
+        im.mask(phone);
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
@@ -67,5 +75,6 @@
             })
         })
     </script>
+
 </body>
 </html>
