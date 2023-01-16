@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Message</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0px auto;
+        }
+
+        #success {
+            display: none;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Напиши мне</h1>
+        <form id="tg">
+            <input class="form-control mb-2" name="name" type="text" placeholder="Имя" required>
+            <input class="form-control mb-2" name="phone" type="text" placeholder="Телефон" required>
+            <textarea class="form-control mb-4" name="message" rows="15" placeholder="Сообщение" required></textarea>
+            <div id="success" class="alert alert-success mb-4">Сообщение отправлено</div>
+            <button class="btn btn-primary" type="submit">Отправить</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const TOKEN = "5443287425:AAEj0MA2OYh2GShTdzuKSrttCK2QBuDHUvQ";
+        const CHAT_ID = "-1001682187999";
+        const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+
+        const success = document.getElementById('success');
+
+        document.getElementById('tg').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let message = `<b>Сообщение с сайта</b>\n`;
+
+            message += `<b>Имя:</b> ${this.name.value}\n`;
+            message += `<b>Телефон:</b> ${this.phone.value}\n`;
+            message += `<b>Сообщение:</b> ${this.message.value}`;
+
+            axios.post(URI_API, {
+                chat_id: CHAT_ID,
+                parse_mode: 'html',
+                text: message
+            })
+            .then((res) => {
+                this.name.value = "";
+                this.phone.value = "";
+                this.message.value = "";
+                success.style.display = "block"
+            })
+            .catch((err) => {
+                console.warn(err);
+            })
+            .finally(() => {
+                console.log('Сообщение отправлено');
+            })
+        })
+    </script>
+</body>
+</html>
